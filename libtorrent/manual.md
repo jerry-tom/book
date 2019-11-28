@@ -24,4 +24,6 @@ libtorrent接口包括几个类。主要的类是session，它包含所有torren
 不建议从libtorrent名称空间中声明类型，因为在将来的版本中它可能会被放弃。而是在libtorrent中包含libtorrent/fwd.hpp用于所有公共类型的前向声明。
 
 ### 故障排除
-开发人员面临的一个常见问题是torrents停止运行而没有解释。
+开发人员面临的一个常见问题是torrents停止运行而没有解释。这是关于在哪个条件下，libtorrent将停止你的torrents的描述，如何找到他以及如何处理。  
+确保保持对torrents的暂停状态，错误状态和上传模式的跟踪。默认情况下，torrents是自动管理的，这意味着libtorrent会暂停，恢复，抓取并自动退出上传模式。  
+每当torrent遇到指明错误时，它将被停止，并且torrent_status::error将描述导致该错误的错误。如果对torrents进行自动管理，则会根据每个种子下载者数量定期对其进行剪贴并暂停或恢复。这将有效地播种最需要种子的种子。
