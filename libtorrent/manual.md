@@ -30,3 +30,12 @@ libtorrent接口包括几个类。主要的类是session，它包含所有torren
 如果torrent遇到磁盘写错误，它将进入上传模式。这意味着它将不会下载任务内容，只会上传。假定写错误是由于磁盘已满或写许可权错误引起的。如果torrent是自动管理的，它将定期退出上传模式，并尝试再次将内容写入磁盘。这意味着如果问题解决，torrent将从某些磁盘错误中恢复。如果没有自动管理torrent，则必须调用set_upload_mode()才能重新打开下载。
 有关如何解决性能问题的详细指南, 请参阅[troubleshooting](troubleshooting.md)
 
+### 网络原语
+libtorrent名称空间中有一些typedef，它们从boost::asio名称空间中提取网络类型，这些是：
+``` text
+using address = boost::asio::ip::address;
+using address_v4 = boost::asio::ip::address_v4;
+using address_v6 = boost::asio::ip::address_v6;
+using boost::asio::ip::tcp;
+using boost::asio::ip::udp;
+```
