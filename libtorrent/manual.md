@@ -39,3 +39,9 @@ using address_v6 = boost::asio::ip::address_v6;
 using boost::asio::ip::tcp;
 using boost::asio::ip::udp;
 ```
+这些类型在<libtorrent/socket.hpp>头文件中声明。
+using语句将使你可以轻松访问：
+``` text
+tcp::endpoint
+udp::endpoint
+```
