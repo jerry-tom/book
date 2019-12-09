@@ -45,3 +45,8 @@ using语句将使你可以轻松访问：
 tcp::endpoint
 udp::endpoint
 ```
+这些都是在libtorrent中使用的endpoint类型. endpoint是具有关联端口的IP地址。  
+有关这些类型的文档，请参阅[asio documentation](boost_asio.md)
+
+### 例外情况
+libtorrent中的许多函数都有两个版本，一个版本会再错误时抛出异常，另一个版本会使用error_code参考，并在错误信息中填充错误代码。
