@@ -49,4 +49,46 @@ udp::endpoint
 有关这些类型的文档，请参阅[asio documentation](boost_asio.md)
 
 ### 例外情况
-libtorrent中的许多函数都有两个版本，一个版本会再错误时抛出异常，另一个版本会使用error_code参考，并在错误信息中填充错误代码。
+libtorrent中的许多函数都有两个版本，一个版本会再错误时抛出异常，另一个版本会使用error_code参考，并在错误信息中填充错误代码。  
+在例外情况下，libtorrent会引发boost::system::system_error例外情况，并带有描述基本错误的error_code.
+
+#### 翻译错误码
+对于系统错误，error_code::message()函数通常将返回本地化的错误字符串。即，属于通用或系统类别的错误。  
+属于libtorrent错误类别的错误未本地化，但是提供英语版本。为了翻译错误码，请比较error_code对象错误类别。  
+lt::libtorrent_category(),如匹配，你就会知道错误代码是指上面的列表。你可以提供自己的错误代码到本地化错误字符串的映射。在这种情况下，你不能依赖error_code::message去生成你自己的字符串。  
+错误的数字值是API的一部分，并且将保持不变，尽管可能会在末尾附加新的错误代码。  
+这是一个如何翻译错误代码的简单示例：
+``` c++
+std::string error_code_to_string(boost::system::error_code const& ec)
+{
+        if (ec.category() != lt::libtorrent_category())
+        {
+                return ec.message();
+        }
+        // the error is a libtorrent error
+
+        int code = ec.value();
+        static const char const* swedish[] =
+        {
+                "inget fel",
+                "en fil i torrenten kolliderar med en fil fran en annan torrent",
+                "hash check misslyckades",
+                "torrentfilen ar inte en dictionary",
+                "'info'-nyckeln saknas eller ar korrupt i torrentfilen",
+                "'info'-faltet ar inte en dictionary",
+                "'piece length' faltet saknas eller ar korrupt i torrentfilen",
+                "torrentfilen saknar namnfaltet",
+                "ogiltigt namn i torrentfilen (kan vara en attack)",
+                // ... more strings here
+        };
+
+        // use the default error string in case we don't have it
+        // in our translated list
+        if (code < 0 || code >= sizeof(swedish)/sizeof(swedish[0]))
+                return ec.message();
+
+        return swedish[code];
+}
+```
+
+### 磁力链接
