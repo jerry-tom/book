@@ -92,3 +92,13 @@ std::string error_code_to_string(boost::system::error_code const& ec)
 ```
 
 ### 磁力链接
+磁力链接是URIs，其中包括信息哈希值，显示名称以及tracker url(可选)。磁力链接背后的思想是，终端用户在浏览器中点击链接，并由bittorrent应用程序处理该链接，开始下载，不需要torrent文件。  
+磁力URI的格式如下：
+``` text
+magnet:?xt=urn:btih: Base16 encoded info-hash [ &dn= name of download ] [ &tr= tracker URL ]*
+```
+为了仅从磁力链接下载元数据(.torrent文件)，在add_torrent_params::file_priorities中，将文件的priorities设置为0. 可以设置比torrent中更多的文件优先级。在下载元数据之前，知道种子文件有多少个文件可能并不容易。其他文件优先级将被忽略。通过将大量文件设置为优先级0，一旦接收到元数据(我们知道有多少文件)，它们就有可能全部都设置为0.  
+在这种情况下，当从群中接收到元数据时，torrent将仍然继续运行，但是它将于大多数的peers断开连接（因为与已经具有该元数据的peers的链接是冗余的）。它将仅继续传播元数据。  
+
+### 排队
+libtorrent支持排队。排队是一种根据特定准则自动暂停和恢复种子的机制。准则依赖torrent所处的总体状态(checking, downloading或seeding)
